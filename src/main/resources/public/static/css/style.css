@@ -1,0 +1,27 @@
+body {
+    background-color: yellow;
+    text-align: center;
+}
+
+h1 {
+    font-family: monospace;
+    font-weight: bold;
+}
+
+h2 {
+    font-family: monospace;
+    font-weight: bold;
+}
+
+h4 {
+    font-family: monospace;
+}
+
+div {
+    font-family: monospace;
+}
+
+img {
+    width: 200px;
+    height: auto;
+}

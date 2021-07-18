@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+        <link rel="stylesheet" th:href="@{/static/css/style.css}"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <title>Visertäjä</title>
+    </head>
+    <body>
+        <br/>
+        <h2>Kaikki käyttäjät</h2>
+        <div>
+            <ul style="list-style-type:none;">
+                <li th:each="kayttaja: ${kayttajat}">
+                    <a th:href="@{/kayttajat/{profiilimerkkijono}(profiilimerkkijono=${kayttaja.profiilimerkkijono})}">
+                    <span th:text="${kayttaja.nimi}">kayttajan nimi</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <br/>
+        <br/>
+        <div><a th:href="@{/etusivu}">Palaa etusivulle</a></div>
+    </body>
+</html>

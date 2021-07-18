@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Visertäjä</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+        <link rel="stylesheet" th:href="@{/static/css/style.css}"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    </head>
+    <body>
+        <br/>
+        <div>
+            <br/>
+            <h1 style="font-family: monospace; text-align: center"><b>Visertäjä</b></h1>    
+            <br/>
+            <h3>Hei <span th:text="${kayttaja.nimi}">kayttajan nimi</span>! Kiva nähdä sinua!</h3>
+            <p/>
+            <h4><a th:href="@{/kayttajat/{profiilimerkkijono}(profiilimerkkijono=${kayttaja.profiilimerkkijono})}">Profiilisi</a></h4>
+            <p/>
+            <p/>
+            <p>***</p>
+            <b>Seuraamani käyttäjät</b>
+            <ul style="list-style-type:none;">
+                <li th:each="seurattava: ${seurattavat}">
+                    <a th:href="@{/kayttajat/{profiilimerkkijono}(profiilimerkkijono=${seurattava.profiilimerkkijono})}">
+                    <span th:text="${seurattava.nimi}">kayttajan nimi</span>
+                    </a>
+                </li>
+            </ul>
+            <p/>
+            <b>Käyttäjät, jotka seuraavat minua</b>
+            <ul style="list-style-type:none;">
+                <li th:each="seuraaja: ${seuraajat}">
+                    <a th:href="@{/kayttajat/{profiilimerkkijono}(profiilimerkkijono=${seuraaja.seuraajaprofiilimerkkijono})}">
+                    <span th:text="${seuraaja.seuraajannimi}">kayttajan nimi</span></a> on seurannut minua <span th:text="${seuraaja.seurausaika}">aika</span> lähtien.
+                    <form th:action="@{/poistaseuraaja/{seuraaja}(seuraaja=${seuraaja.seuraajaprofiilimerkkijono})}" method="POST" th:hidden="true" name="kayttajaesto">
+                        <input type="submit" value="Estä käyttäjä"/>
+                    </form>
+                    <a href="javascript: document.kayttajaesto.submit()">Estä käyttäjä</a>
+                 </li>
+             </ul>
+             <p/>
+            <p>***</p>
+            <h4>Hae tiettyä käyttäjää</h4>
+            <form th:action="@{/haekayttajaa}" method="POST">
+                <input type="text" name="nimi"/>
+                <input type="submit" value="Hae"/>
+            </form>
+            <ul style="list-style-type:none;">
+                <li th:each="haettukayttaja: ${haetutkayttajat}">
+                    <a th:href="@{/kayttajat/{profiilimerkkijono}(profiilimerkkijono=${haettukayttaja.profiilimerkkijono})}">
+                    <span th:text="${haettukayttaja.nimi}">kayttajan nimi</span>
+                    </a>
+                </li>
+            </ul>
+            <a th:href="@{/kayttajat}">Selaa käyttäjiä</a>
+            <br/>
+            <p/>
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Kirjaudu ulos" />
+            </form>
+        </div>
+    </body>
+</html>

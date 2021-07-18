@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Visertäjä</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+        <link rel="stylesheet" th:href="@{/static/css/style.css}"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    </head>
+    <body>
+        <h2>Käyttäjän <span th:text="${kayttaja.nimi}">kayttajan nimi</span> kuvasivu</h2>
+        <br/>
+        <div th:if="${current != null}">
+            <p>Kuva <span th:text="${current}">0</span> / 10</p>
+            <div th:if="${previous != null}">
+                <a th:href="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${previous})}">Edellinen kuva</a>
+            </div>
+            <div th:if="${next != null}">
+                <a th:href="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${next})}">Seuraava kuva</a>
+            </div>
+            <p/>
+            <p/>
+            <img th:src="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}/content(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${current})}"/>
+            <br/>
+            <b th:text="${kuvaus}">Kuvaus</b>
+            <p>Tykkäyksiä <span th:text="${tykkaykset}">tykkäyksiä</span></p>
+            <div th:unless="${valinta}">
+                <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}/tykkaa(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${current})}" th:hidden="true" name="tykkaakuvasta">
+                    <input type="submit" value="Tykkää kuvasta"/>
+                </form>
+                <a href="javascript: document.tykkaakuvasta.submit()">Tykkää kuvasta</a>
+            </div>
+            <div th:if="${valinta}">
+                <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}/poistatykkays(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${current})}" th:hidden="true" name="poistatykkays">
+                    <input type="submit" value="Poista tykkäys"/>
+                </form>
+                <a href="javascript: document.poistatykkays.submit()">Poista tykkäys</a>
+            </div>
+            <p/>
+            <h4>Kommentit</h4>
+            <div th:if="${sallittukommentoija}">
+                <br/>
+                <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}/kommentoi(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${current})}">
+                    <input type="text" name="kommentti"/>
+                    <input type="submit" value="Kommentoi"/>
+                </form>
+                <p/>
+            </div>
+            <div th:if="${kayttaja == omistaja}">
+                <br/>
+                <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}/kommentoi(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${current})}">
+                    <input type="text" name="kommentti"/>
+                <input type="submit" value="Kommentoi"/>
+                </form>
+                <p/>
+            </div>
+            <ul style="list-style-type:none;">
+                <li th:each="kommentti: ${kommentit}">
+                    <span th:text="${kommentti.teksti}">teksti</span>
+                    <i><span th:text="${kommentti.kommentoijannimi}">lähettäjä</span> <span th:text="${kommentti.julkaisuaika}">aika</span></i>
+                    <p/>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${current != null and kayttaja == omistaja}">
+            <p>*****</p>
+            <h4>Kuvatoiminnot</h4><br/>
+            <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}/profiilikuvaksi(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${current})}" enctype="multipart/form-data" th:hidden="true" name="profiilikuvaksi">
+                <input type="submit" value="Aseta profiilikuvaksi"/>
+            </form>
+            <a href="javascript: document.profiilikuvaksi.submit()">Aseta tämä kuva profiilikuvaksi</a><br/>            <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}/poistakuva(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${current})}" enctype="multipart/form-data" th:hidden="true" name="poistakuva">
+                <input type="submit" value="Poista kuva"/>
+            </form>
+            <a href="javascript: document.poistakuva.submit()">Poista kuva</a><br/>
+            <p/>
+            <p/>
+            <b>Vaihda tämän kuvan paikalle uusi kuva</b>
+            <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}/vaihdakuva(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${current})}" enctype="multipart/form-data">
+                <input type="file" name="file" id="file"/>
+                <p/>
+                <p>Kuvateksti
+                    <input type="text" name="kuvaus" id="kuvaus"/></p>
+                <p/>
+                <input type="submit" value="Vaihda"/>
+            </form>
+        </div>
+        <p/>
+        <p/>
+        <div th:if="${kayttaja == omistaja}">
+            <p>*****</p>
+            <h4>Lisää uusi kuva</h4>
+            <br/>
+            <div th:unless="${kuvamaara == maksimimaara}">
+                <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/kuvat/lisaakuva(profiilimerkkijono=${kayttaja.profiilimerkkijono})}" enctype="multipart/form-data">
+                    <input type="file" name="file" id="file"/>
+                    <p/>
+                    <p>Kuvateksti
+                        <input type="text" name="kuvaus" id="kuvaus"/></p>
+                    <p/>
+                    <input type="submit" value="Lisää!"/>
+                </form>
+            </div>
+            <div th:if="${kuvamaara == maksimimaara}">
+                <i>Sinulla voi olla kuvasivullasi enintään 10 kuvaa. Lisää uusi kuva aiemman kuvan päälle.</i>
+            </div>
+        </div>
+        <br/>
+        <div><a th:href="@{/kayttajat/{profiilimerkkijono}(profiilimerkkijono=${kayttaja.profiilimerkkijono})}">Käyttäjän <span th:text="${kayttaja.nimi}">kayttajan nimi</span> profiilisivulle</a></div>
+        <p/>
+        <p/>
+    </body>
+</html>

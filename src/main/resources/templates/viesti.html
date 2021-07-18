@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Visertäjä</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+        <link rel="stylesheet" th:href="@{/static/css/style.css}"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    </head>
+    <body>
+        <h2>Käyttäjän <span th:text="${kayttaja.nimi}">kayttajan nimi</span> viesti</h2>
+        <br/>
+        <br/>
+        <div>
+            <h4><span th:text="${viesti.teksti}">teksti</span></h4><br/>
+            <i><span th:text="${viesti.kayttaja.nimi}">lähettäjä</span> <span th:text="${viesti.julkaisuaika}">aika</span></i>
+            <br/>
+            <p><span th:text="${viesti.tykkaykset.size()}">tykkäyksiä</span> tykkäystä</p>
+            <div th:unless="${valinta}">
+                <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/viestit/{id}/tykkaa(profiilimerkkijono=${kayttaja.profiilimerkkijono}, id=${viesti.id})}" th:hidden="true" name="tykkaaviestista">
+                    <input type="submit" value="Tykkää viestistä"/>
+                </form>
+                <a href="javascript: document.tykkaaviestista.submit()">Tykkää viestistä</a>
+            </div>
+            <div th:if="${valinta}">
+                <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/viestit/{id}/poistatykkays(profiilimerkkijono=${kayttaja.profiilimerkkijono}, id=${viesti.id})}" th:hidden="true" name="poistatykkays">
+                    <input type="submit" value="Poista tykkäys"/>
+                </form>
+                <a href="javascript: document.poistatykkays.submit()">Poista tykkäys</a>
+            </div>
+            <p/>
+            <p/>
+            <b>Kommentit</b>
+            <ul style="list-style-type:none;">
+                <li th:each="kommentti: ${kommentit}">
+                    <span th:text="${kommentti.teksti}">teksti</span><br/>
+                    <i><span th:text="${kommentti.kommentoijannimi}">lähettäjä</span> <span th:text="${kommentti.julkaisuaika}">aika</span></i>
+                    <p/>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${kayttaja == omistaja}">
+            <br/>
+            <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/viestit/{id}/kommentoi(profiilimerkkijono=${kayttaja.profiilimerkkijono}, id=${viesti.id})}">
+                <input type="text" name="kommentti"/>
+                <input type="submit" value="Kommentoi"/>
+            </form>
+            <br/>            
+        </div>
+        <div th:if="${sallittukommentoija}">
+            <h4>Lisää uusi kommentti</h4>
+            <br/>
+            <form method="POST" th:action="@{/kayttajat/{profiilimerkkijono}/viestit/{id}/kommentoi(profiilimerkkijono=${kayttaja.profiilimerkkijono}, id=${viesti.id})}">
+                <input type="text" name="kommentti"/>
+                <input type="submit" value="Kommentoi"/>
+            </form>
+            <br/>
+        </div>
+        <div><a th:href="@{/kayttajat/{profiilimerkkijono}(profiilimerkkijono=${kayttaja.profiilimerkkijono})}">Käyttäjän <span th:text="${kayttaja.nimi}">kayttajan nimi</span> profiilisivulle</a></div>
+        <br/>
+    </body>
+</html>

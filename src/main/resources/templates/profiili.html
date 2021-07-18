@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Visertäjä</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+        <link rel="stylesheet" th:href="@{/static/css/style.css}"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    </head>
+    <body>
+        <div>
+            <p><a th:href="@{/etusivu}">Etusivulle</a></p>
+            <br/>
+            <div th:if="${kayttaja.profiilikuvannumero != 0}">
+                <img th:src="@{/kayttajat/{profiilimerkkijono}/kuvat/{numero}/content(profiilimerkkijono=${kayttaja.profiilimerkkijono}, numero=${kayttaja.profiilikuvannumero})}"/>
+            </div>
+            <div th:if="${kayttaja.profiilikuvannumero == 0}">
+                <img th:src="@{/img/blank-profile-picture-973460.png}"/>
+            </div>
+            <h1 th:text="${kayttaja.nimi}">kayttajan nimi</h1>
+            <div th:unless="${kayttaja == omistaja}">
+                <form th:action="@{/kayttajat/{profiilimerkkijono}/seuraa(profiilimerkkijono=${kayttaja.profiilimerkkijono})}" method="POST" th:hidden="true" name="seuraakayttajaa">
+                    <input type="submit" value="Seuraa tätä käyttäjää"/>
+                </form>
+                <a href="javascript: document.seuraakayttajaa.submit()">Seuraa tätä käyttäjää</a>
+            </div>
+            <p/>
+            <h4><a th:href="@{/kayttajat/{profiilimerkkijono}/kuvat(profiilimerkkijono=${kayttaja.profiilimerkkijono})}">Käyttäjän kuvat</a></h4>
+            <p/>
+            <p/>
+            <h3>Viserrykset</h3>
+            <br/>
+            <div th:if="${kayttaja == omistaja}">
+                <form th:action="@{/julkaise}" method="POST">
+                    <input type="text" name="teksti"/>
+                    <input type="submit" value="Julkaise!"/>
+                </form>
+                <br/>
+            </div>
+            <ul style="list-style-type:none;">
+                <li th:each="viesti: ${viestit}">
+                    <b><span th:text="${viesti.teksti}">teksti</span></b><br/>
+                    <i><span th:text="${viesti.kayttaja.nimi}">lähettäjä</span> <span th:text="${viesti.julkaisuaika}">aika</span></i>
+                    <p><a th:href="@{/kayttajat/{profiilimerkkijono}/viestit/{id}(profiilimerkkijono=${viesti.kayttaja.profiilimerkkijono}, id=${viesti.id})}"><span th:text="${viesti.tykkaykset.size()}">tykkäyksiä</span> tykkäystä, 
+                    <span th:text="${viesti.kommentit.size()}">kommentteja</span> kommenttia</a></p>
+                    <p/>
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>
