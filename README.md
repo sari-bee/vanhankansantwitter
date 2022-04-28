@@ -3,4 +3,4 @@ Web-palvelinohjelmoinnin kurssia (HY) varten tehty projekti; "vanhan kansan Twit
 
 https://still-temple-88112.herokuapp.com/
 
-(Course project for web server programming in Java. "Oldtime Twitter")
+(Course project for web server programming in Java; "Oldtime Twitter".)
